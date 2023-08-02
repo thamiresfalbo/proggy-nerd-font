@@ -1,1 +1,1 @@
-Patched ProggyFonts for the lazyness.
+Proggy Fonts patched for Nerd Fonts.
