@@ -14,13 +14,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Packages
+      - uses: snickerbockers/submodules-init@v4
+      - name: Prepare Image
         run: |
-          sudo apt update -y -q
-          sudo apt install software-properties-common -y -q
-          sudo apt install python3-fontforge -y -q
-      - name: Install FontForge
+          sudo apt-get update -y -q
+          sudo apt-get install software-properties-common python3-fontforge
+      - name: Install Packages
         run: |
-          sudo apt install libjpeg-dev libtiff5-dev libpng-dev libfreetype6-dev libgif-dev libgtk-3-dev libxml2-dev libpango1.0-dev libcairo2-dev libspiro-dev python3-dev ninja-build cmake build-essential gettext libuninameslist-dev fontforge fd-find -y -q
+          sudo apt-get install -y libjpeg-dev libtiff5-dev \
+          libpng-dev libfreetype6-dev libgif-dev libgtk-3-dev \
+          libxml2-dev libpango1.0-dev libcairo2-dev libspiro-dev \
+          python3-dev ninja-build cmake build-essential gettext \
+          libuninameslist-dev fontforge rust-fd-find -y -q
       - name: Run a one-line script
-        run: find . $PWD/proggyfonts -e ttf --exec fontforge --script nerd-fonts/font-patcher -c -l -s -out output/ {} || "Error!" && exit
+        run: fd. $PWD/proggyfonts -e ttf --exec fontforge --script ./FontPatcher/font-patcher -c -l -out output/ {} || "Error!" && exit
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release
+          path: output/
